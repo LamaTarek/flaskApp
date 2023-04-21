@@ -48,7 +48,7 @@ def get_weather_data(location):
     else:
         return None
 
-@app.route('/weather/<location>')
+@app.route('/<location>')
 def weather(location):
     test_features = get_weather_data(location)
     prepared_api = preprocessing_pipeline.transform(test_features)
