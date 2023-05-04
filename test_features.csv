@@ -1,0 +1,15 @@
+,date,temp,wind,humidity,weather
+0,2023-05-05,13.4,17.3,85.0,Fog
+1,2023-05-06,12.0,16.6,93.0,Scattered clouds
+2,2023-05-07,14.8,15.8,74.0,Scattered clouds
+3,2023-05-08,12.4,20.5,92.0,Fog
+4,2023-05-09,13.7,16.6,78.0,Scattered clouds
+5,2023-05-10,12.2,18.7,75.0,Scattered clouds
+6,2023-05-11,11.7,15.5,79.0,Scattered clouds
+7,2023-05-12,11.4,20.5,90.0,Scattered clouds
+8,2023-05-13,14.0,17.3,84.0,Cloudy
+9,2023-05-14,13.0,18.4,65.0,Scattered clouds
+10,2023-05-15,12.8,13.7,64.0,Scattered clouds
+11,2023-05-16,10.3,13.3,89.0,Scattered clouds
+12,2023-05-17,12.8,8.6,69.0,Sunny
+13,2023-05-18,10.2,6.5,78.0,Scattered clouds
