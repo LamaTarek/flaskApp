@@ -15,7 +15,7 @@ app = Flask(__name__)
 pickled_model = joblib.load(MODEL_PATH)
 preprocessing_pipeline = joblib.load('preprocessing.pkl')
 
-def get_weather_data(location, days=7):
+def get_weather_data(location, days):
     url = f'https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={location}&days={days}'
     response = requests.get(url)
     if response.status_code == 200:
@@ -79,14 +79,15 @@ def get_weather_data(location, days=7):
             mapped_weather_condition = weather_mapping.get(weather, None)
             if mapped_weather_condition is None:
                 # Replace missing weather value 
-                mapped_weather_condition = 'Fog'
+                mapped_weather_condition = 'Sunny'
             weather_data.append({'date': date, 'temp': temp, 'wind': wind, 'humidity': humidity, 'weather': mapped_weather_condition})
         return pd.DataFrame(weather_data)
     else:
         return None
-    
+
+@app.route('/<location>')   
 @app.route('/<location>/<int:days>')
-def weather(location, days):
+def weather(location, days=14):
     test_features = get_weather_data(location, days)
     test_features.to_csv('test_features.csv')   
         # Use the weather data to make a prediction with the trained machine learning model
