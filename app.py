@@ -6,7 +6,7 @@ import requests
 import joblib
 
 
-API_KEY = '553abb1a42be44ae8a3155820230806'
+API_KEY = '69b0e0e0f0694b23890134212232206'
 MODEL_PATH = 'model.pkl'
 
 app = Flask(__name__)
