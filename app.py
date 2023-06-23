@@ -6,7 +6,7 @@ import requests
 import joblib
 
 
-API_KEY = '69b0e0e0f0694b23890134212232206'
+API_KEY = '553abb1a42be44ae8a3155820230806'
 MODEL_PATH = 'model.pkl'
 
 app = Flask(__name__)
@@ -15,8 +15,8 @@ app = Flask(__name__)
 pickled_model = joblib.load(MODEL_PATH)
 preprocessing_pipeline = joblib.load('preprocessing.pkl')
 
-def get_weather_data(location, days):
-    url = f'https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={location}&days={days}'
+def get_weather_data(latitude, longitude, days):
+    url = f'https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={latitude},{longitude}&days={days}'
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()['forecast']['forecastday']
@@ -85,22 +85,26 @@ def get_weather_data(location, days):
     else:
         return None
 
-@app.route('/<location>')   
-@app.route('/<location>/<int:days>')
-def weather(location, days=14):
-    test_features = get_weather_data(location, days)
-    test_features.to_csv('test_features.csv')   
-        # Use the weather data to make a prediction with the trained machine learning model
+@app.route('/<float:latitude>/<float:longitude>')
+@app.route('/<float:latitude>/<float:longitude>/<int:days>')
+def weather(latitude, longitude, days=14):
+    test_features = get_weather_data(latitude, longitude, days)
+    # Use the weather data to make a prediction with the trained machine learning model
     prepared_api = preprocessing_pipeline.transform(test_features)
-        # Return the predicted solar power as a JSON response for each day in the forecast
+    # Return the predicted solar power as a JSON response for each day in the forecast
     if test_features is not None:
-            # Use the weather data to make a prediction with the trained machine learning model
-            predicted_pickle = pickled_model.predict(prepared_api)
-            # Return the predicted solar power as a JSON response
-            return jsonify([{'date': date, 'predicted_solar_power': power} for date, power in zip(test_features['date'], predicted_pickle)])
+        # Use the weather data to make a prediction with the trained machine learning model
+        predicted_pickle = pickled_model.predict(prepared_api)
+        # Return the predicted solarpower as a JSON response for each day in the forecast
+        predicted_solar_power = np.exp(predicted_pickle) - 1
+        result = {'predictions': []}
+        for i in range(len(predicted_solar_power)):
+            date = test_features.iloc[i]['date']
+            prediction = predicted_solar_power[i]
+            result['predictions'].append({'date': date, 'predicted_solar_power': prediction})
+        return jsonify(result)
     else:
-            return jsonify({'error': 'Unable to retrieve weather data.'})
-        
+        return 'Error retrieving weather data.'
 
 if __name__ == '__main__':
     app.run(debug=True)
